@@ -1,0 +1,131 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-apc-navy: #08172f;
+  --color-apc-royal: #102a54;
+  --color-apc-gold: #d8b45a;
+  --color-apc-ivory: #f7f3e8;
+  --color-apc-success: #1f8a5b;
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-inter);
+}
+
+:root {
+  color-scheme: dark;
+  background: var(--color-apc-navy);
+  --font-inter: Arial, Helvetica, sans-serif;
+  --font-playfair: Georgia, 'Times New Roman', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--color-apc-navy);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 82% 12%, rgb(216 180 90 / 12%), transparent 18rem),
+    radial-gradient(circle at 12% 92%, rgb(216 180 90 / 8%), transparent 20rem),
+    var(--color-apc-navy);
+  color: var(--color-apc-ivory);
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-apc-gold);
+  color: var(--color-apc-navy);
+}
+
+.songket-surface {
+  background-image:
+    linear-gradient(45deg, rgb(216 180 90 / 8%) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(216 180 90 / 8%) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(216 180 90 / 8%) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(216 180 90 / 8%) 75%);
+  background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+  background-size: 18px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+
+  :root,
+  html,
+  body {
+    color-scheme: light;
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .songket-surface {
+    min-height: auto;
+    padding: 0;
+    background: #fff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .attendance-table {
+    overflow: visible;
+    border-color: #777;
+  }
+
+  .attendance-table table {
+    font-size: 9pt;
+    color: #111;
+  }
+
+  .attendance-table thead,
+  .attendance-table th,
+  .attendance-table td,
+  .attendance-table span,
+  header h1,
+  header p {
+    background: #fff !important;
+    color: #111 !important;
+    border-color: #aaa !important;
+  }
+
+  .attendance-table tr {
+    break-inside: avoid;
+  }
+
+  .attendance-table th,
+  .attendance-table td {
+    padding: 5px 7px;
+  }
+}
