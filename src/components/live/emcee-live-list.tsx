@@ -10,16 +10,6 @@ interface LivePayload {
   sessionName: string | null;
 }
 
-function formatConfirmedAt(value: string | null): string {
-  if (!value) return '-';
-  return new Intl.DateTimeFormat('ms-MY', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'Asia/Kuala_Lumpur',
-  }).format(new Date(value));
-}
-
 export function EmceeLiveList({ initialRows, initialSessionName, refreshUrl }: { initialRows: LiveAttendanceRow[]; initialSessionName: string | null; refreshUrl: string }) {
   const [rows, setRows] = useState(initialRows);
   const [sessionName, setSessionName] = useState(initialSessionName);
@@ -62,8 +52,8 @@ export function EmceeLiveList({ initialRows, initialSessionName, refreshUrl }: {
 
         <div className="attendance-table mt-6 overflow-x-auto border border-apc-gold/45">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-apc-royal text-apc-ivory"><tr>{['Bil', 'Nama', 'Sekolah / Unit', 'Kerusi', 'Kaunter', 'Masa Disahkan'].map((label) => <th className="px-3 py-3 font-semibold" key={label}>{label}</th>)}</tr></thead>
-            <tbody>{rows.map((row) => <tr className="border-t border-apc-gold/20" key={row.participantId}><td className="px-3 py-3">{row.bil}</td><td className="px-3 py-3 font-semibold">{row.name}</td><td className="px-3 py-3 text-apc-ivory/75">{row.organization}</td><td className="px-3 py-3">{row.seatNo}</td><td className="px-3 py-3">{row.counterNo}</td><td className="px-3 py-3 text-green-200">{formatConfirmedAt(row.confirmedAt)}</td></tr>)}</tbody>
+            <thead className="bg-apc-royal text-apc-ivory"><tr>{['Bil', 'Nama', 'Sekolah / Unit'].map((label) => <th className="px-3 py-3 font-semibold" key={label}>{label}</th>)}</tr></thead>
+            <tbody>{rows.map((row) => <tr className="border-t border-apc-gold/20" key={row.participantId}><td className="px-3 py-3">{row.bil}</td><td className="px-3 py-3 font-semibold">{row.name}</td><td className="px-3 py-3 text-apc-ivory/75">{row.organization}</td></tr>)}</tbody>
           </table>
           {rows.length === 0 && <p className="p-5 text-center text-apc-ivory/70">Belum ada kehadiran yang disahkan.</p>}
         </div>

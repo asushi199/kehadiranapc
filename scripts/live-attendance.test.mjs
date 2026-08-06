@@ -36,6 +36,10 @@ try {
   assert.doesNotMatch(livePage, /LiveRefresh/);
   assert.match(livePage, /EmceeLiveList/);
 
+  const emceeListSource = readFileSync('src/components/live/emcee-live-list.tsx', 'utf8');
+  assert.match(emceeListSource, /\['Bil', 'Nama', 'Sekolah \/ Unit'\]/);
+  assert.doesNotMatch(emceeListSource, /row\.seatNo|row\.counterNo|formatConfirmedAt/);
+
   const publicEmceePage = 'src/app/pengacara/page.tsx';
   const publicEmceeApi = 'src/app/api/pengacara/attendance/route.ts';
   assert.equal(existsSync(publicEmceePage), true, '司仪需要无需令牌的 /pengacara 页面。');
