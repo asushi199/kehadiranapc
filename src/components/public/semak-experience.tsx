@@ -168,12 +168,13 @@ export function SemakExperience() {
 
   if (result) {
     const isConfirmed = result.status === 'Hadir Disahkan';
+    const showDetails = result.status === 'Hadir Disahkan';
     return (
       <main className="songket-surface min-h-screen px-4 py-7 sm:px-6 sm:py-10">
         <section className="mx-auto w-full max-w-md">
           <header className="mb-5 text-center">
             <p className="text-xs font-semibold tracking-[0.28em] text-apc-gold">APC 2025</p>
-            <h1 className="mt-2 font-display text-3xl text-apc-gold">{isConfirmed ? 'KEHADIRAN BERJAYA DISAHKAN' : 'TAHNIAH'}</h1>
+            <h1 className="mt-2 font-display text-3xl text-apc-gold">{isConfirmed ? 'KEHADIRAN BERJAYA DISAHKAN' : 'SAHKAN KEHADIRAN'}</h1>
           </header>
 
           {isConfirmed && (
@@ -183,30 +184,35 @@ export function SemakExperience() {
           )}
 
           <article className="border-2 border-apc-gold bg-apc-ivory p-5 text-apc-navy shadow-2xl shadow-black/30">
-            <p className="text-center text-xs font-semibold tracking-[0.22em] text-apc-royal/70">MAKLUMAT PENERIMA</p>
-            <h2 className="mt-3 text-center font-display text-2xl leading-tight">{result.name}</h2>
-            <p className="mt-2 text-center text-sm leading-5 text-apc-royal">{result.organization}</p>
-            <div className="my-5 border-t border-apc-gold/65" />
-            <dl className="grid grid-cols-2 gap-4 text-center">
-              <div className="border-r border-apc-gold/60 pr-3">
-                <dt className="text-xs font-semibold uppercase tracking-wide text-apc-royal">No. Penerima</dt>
-                <dd className="mt-1 font-display text-5xl leading-none">{result.bil}</dd>
+            {showDetails ? <>
+              <p className="text-center text-xs font-semibold tracking-[0.22em] text-apc-royal/70">MAKLUMAT PENERIMA</p>
+              <h2 className="mt-3 text-center font-display text-2xl leading-tight">{result.name}</h2>
+              <p className="mt-2 text-center text-sm leading-5 text-apc-royal">{result.organization}</p>
+              <div className="my-5 border-t border-apc-gold/65" />
+              <dl className="grid grid-cols-2 gap-4 text-center">
+                <div className="border-r border-apc-gold/60 pr-3">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-apc-royal">No. Penerima</dt>
+                  <dd className="mt-1 font-display text-5xl leading-none">{result.bil}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-apc-royal">No. Kerusi</dt>
+                  <dd className="mt-1 font-display text-5xl leading-none">{result.seatNo}</dd>
+                </div>
+              </dl>
+              <div className="mt-5 border-t border-apc-gold/65 pt-4 text-center">
+                <p className="text-xs font-semibold uppercase tracking-wide text-apc-royal">Kaunter</p>
+                <p className="mt-1 font-display text-6xl leading-none">{result.counterNo}</p>
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-apc-royal">No. Kerusi</dt>
-                <dd className="mt-1 font-display text-5xl leading-none">{result.seatNo}</dd>
-              </div>
-            </dl>
-            <div className="mt-5 border-t border-apc-gold/65 pt-4 text-center">
-              <p className="text-xs font-semibold uppercase tracking-wide text-apc-royal">Kaunter</p>
-              <p className="mt-1 font-display text-6xl leading-none">{result.counterNo}</p>
-            </div>
-            <p className="mt-4 text-center text-xs text-apc-royal/75">Kad Pengenalan: {result.maskedIc}</p>
+              <p className="mt-4 text-center text-xs text-apc-royal/75">Kad Pengenalan: {result.maskedIc}</p>
+            </> : <>
+              <p className="text-center text-xs font-semibold tracking-[0.22em] text-apc-royal/70">KEHADIRAN ANDA</p>
+              <h2 className="mt-3 text-center font-display text-2xl leading-tight">{result.name}</h2>
+              <p className="mt-5 text-center text-sm leading-6 text-apc-royal">Sila sahkan kehadiran untuk melihat nombor penerima, tempat duduk dan kaunter anda.</p>
+              <button className="mt-6 flex min-h-14 w-full items-center justify-center gap-2 bg-apc-gold px-5 py-3 text-sm font-bold tracking-wide text-apc-navy disabled:cursor-not-allowed disabled:opacity-60" disabled={isConfirming} onClick={confirmAttendance} type="button"><UserRoundCheck aria-hidden="true" className="size-5" />{isConfirming ? 'SEDANG MENGESAHKAN...' : 'SAHKAN KEHADIRAN'}</button>
+            </>}
           </article>
 
-          <p className="mt-4 border border-apc-gold/65 bg-apc-navy/85 px-4 py-3 text-center text-sm leading-5 text-apc-ivory">
-            Sila hadir ke <span className="font-semibold text-apc-gold">Kaunter {result.counterNo}</span> untuk urusan penerimaan sijil.
-          </p>
+          {showDetails && <p className="mt-4 border border-apc-gold/65 bg-apc-navy/85 px-4 py-3 text-center text-sm leading-5 text-apc-ivory">Sila hadir ke <span className="font-semibold text-apc-gold">Kaunter {result.counterNo}</span> untuk urusan penerimaan sijil.</p>}
 
           {message && <Notice message={message} />}
 
@@ -215,17 +221,7 @@ export function SemakExperience() {
               <p className="flex items-center justify-center gap-2 text-sm text-green-200"><CheckCircle2 aria-hidden="true" className="size-4" /> Disahkan pada {formatDateTime(result.confirmedAt)}</p>
               <p className="mt-5 text-sm leading-6 text-apc-ivory/85">Terima kasih. Sila simpan paparan ini sebagai rujukan.</p>
             </div>
-          ) : (
-            <button
-              className="mt-5 flex min-h-12 w-full items-center justify-center gap-2 border border-apc-gold bg-apc-gold px-5 py-3 text-sm font-bold tracking-wide text-apc-navy transition-colors hover:bg-apc-ivory disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-apc-gold"
-              disabled={isConfirming}
-              onClick={confirmAttendance}
-              type="button"
-            >
-              <UserRoundCheck aria-hidden="true" className="size-5" />
-              {isConfirming ? 'SEDANG MENGESAHKAN...' : 'SAHKAN KEHADIRAN'}
-            </button>
-          )}
+          ) : null}
 
           <button className="mt-4 min-h-12 w-full text-sm font-semibold text-apc-ivory underline underline-offset-4 disabled:opacity-50" disabled={isConfirming} onClick={clearResult} type="button">
             CARI SEMULA

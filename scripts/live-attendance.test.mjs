@@ -44,6 +44,13 @@ try {
   assert.match(publicEmceeSource, /EmceeLiveList/);
   assert.match(publicEmceeSource, /dynamic = 'force-dynamic'/);
   assert.match(readFileSync(publicEmceeApi, 'utf8'), /getConfirmedRows/);
+
+  const counterBoardSource = readFileSync('src/components/admin/counter-board.tsx', 'utf8');
+  assert.match(counterBoardSource, /\/api\/admin\/attendance/);
+  assert.match(counterBoardSource, /SAHKAN/);
+
+  const semakSource = readFileSync('src/components/public/semak-experience.tsx', 'utf8');
+  assert.match(semakSource, /const showDetails = result\.status === 'Hadir Disahkan';/);
 } finally {
   rmSync(outputDirectory, { recursive: true, force: true });
 }
