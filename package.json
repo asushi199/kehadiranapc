@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "test:acceptance": "node scripts/acceptance-tests.mjs",
     "typecheck": "tsc --noEmit",
+    "test:live": "node scripts/live-attendance.test.mjs",
     "validate:import": "node scripts/import-participants.mjs --validate-only",
     "verify:data": "node scripts/import-participants.mjs --verify-database"
   },
