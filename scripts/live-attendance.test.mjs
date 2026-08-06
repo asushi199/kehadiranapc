@@ -39,6 +39,8 @@ try {
   const emceeListSource = readFileSync('src/components/live/emcee-live-list.tsx', 'utf8');
   assert.match(emceeListSource, /\['Bil', 'Nama', 'Sekolah \/ Unit'\]/);
   assert.doesNotMatch(emceeListSource, /row\.seatNo|row\.counterNo|formatConfirmedAt/);
+  assert.match(emceeListSource, /useAttendanceRealtimeRefresh/);
+  assert.doesNotMatch(emceeListSource, /setInterval\(.*2_000/);
 
   const publicEmceePage = 'src/app/pengacara/page.tsx';
   const publicEmceeApi = 'src/app/api/pengacara/attendance/route.ts';
@@ -52,6 +54,15 @@ try {
   const counterBoardSource = readFileSync('src/components/admin/counter-board.tsx', 'utf8');
   assert.match(counterBoardSource, /\/api\/admin\/attendance/);
   assert.match(counterBoardSource, /SAHKAN/);
+  assert.match(counterBoardSource, /useAttendanceRealtimeRefresh/);
+  assert.doesNotMatch(counterBoardSource, /setInterval\(.*2_000/);
+
+  const realtimeRefreshSource = readFileSync('src/components/live/use-attendance-realtime-refresh.ts', 'utf8');
+  assert.match(realtimeRefreshSource, /attendance_refresh_events/);
+  assert.match(realtimeRefreshSource, /10_000/);
+  const realtimeMigration = readFileSync('supabase/migrations/0003_attendance_realtime_refresh.sql', 'utf8');
+  assert.match(realtimeMigration, /attendance_refresh_events/);
+  assert.match(realtimeMigration, /participant_activity_refresh_event/);
 
   const semakSource = readFileSync('src/components/public/semak-experience.tsx', 'utf8');
   assert.match(semakSource, /const showDetails = result\.status === 'Hadir Disahkan';/);

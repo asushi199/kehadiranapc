@@ -1,10 +1,11 @@
 'use client';
 
 import { Radio } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { getClientErrorMessage } from '@/lib/http/client-errors';
 import type { LiveAttendanceRow } from '@/lib/data/live-attendance';
+import { useAttendanceRealtimeRefresh } from '@/components/live/use-attendance-realtime-refresh';
 
 interface CounterPayload {
   rows: LiveAttendanceRow[];
@@ -42,10 +43,8 @@ export function CounterBoard({ initialRows, initialSessionName }: { initialRows:
     }
   }, []);
 
-  useEffect(() => {
-    const intervalId = window.setInterval(() => { void sync(counterNo); }, 2_000);
-    return () => window.clearInterval(intervalId);
-  }, [counterNo, sync]);
+  const refresh = useCallback(() => { void sync(counterNo); }, [counterNo, sync]);
+  const refreshStatus = useAttendanceRealtimeRefresh(refresh);
 
   const confirmAttendance = async (participantId: string) => {
     setPendingParticipantId(participantId);
@@ -74,7 +73,14 @@ export function CounterBoard({ initialRows, initialSessionName }: { initialRows:
             {[1, 2, 3, 4, 5, 6].map((number) => <option key={number} value={number}>Kaunter {number}</option>)}
           </select>
         </label>
-        <div className="flex items-center gap-2 text-xs text-green-200"><Radio aria-hidden="true" className="size-4" /> Langsung · dikemas kini {lastUpdated.toLocaleTimeString('ms-MY')}</div>
+        <div className={`flex items-center gap-2 text-xs ${refreshStatus === 'live' ? 'text-green-200' : 'text-amber-100'}`}>
+          <Radio aria-hidden="true" className="size-4" />
+          {refreshStatus === 'live'
+            ? `Langsung · dikemas kini ${lastUpdated.toLocaleTimeString('ms-MY')}`
+            : refreshStatus === 'fallback'
+              ? 'Sambungan Realtime terganggu · semak setiap 10 saat'
+              : 'Menyambung Realtime...'}
+        </div>
       </div>
       <p className="mt-3 text-sm text-apc-gold">{sessionName ?? 'Tiada session aktif'} · {rows.length} penerima</p>
       {message && <p className="mt-3 border border-amber-300/50 px-3 py-3 text-sm text-amber-100">{message}</p>}

@@ -67,6 +67,12 @@ export interface AuditLog {
   created_at: string;
 }
 
+export interface AttendanceRefreshEvent {
+  [key: string]: unknown;
+  id: number;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -75,6 +81,7 @@ export interface Database {
       participant_activity: { Row: ParticipantActivity; Insert: Omit<ParticipantActivity, 'id' | 'updated_at'>; Update: Partial<Omit<ParticipantActivity, 'id'>>; Relationships: [] };
       user_profiles: { Row: UserProfile; Insert: Omit<UserProfile, 'created_at' | 'updated_at'>; Update: Partial<Omit<UserProfile, 'id' | 'created_at'>>; Relationships: [] };
       audit_logs: { Row: AuditLog; Insert: Omit<AuditLog, 'id' | 'created_at'>; Update: never; Relationships: [] };
+      attendance_refresh_events: { Row: AttendanceRefreshEvent; Insert: Record<string, never>; Update: never; Relationships: [] };
     };
     Views: Record<string, never>;
     Functions: {

@@ -1,9 +1,10 @@
 'use client';
 
 import { Radio } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { LiveAttendanceRow } from '@/lib/data/live-attendance';
+import { useAttendanceRealtimeRefresh } from '@/components/live/use-attendance-realtime-refresh';
 
 interface LivePayload {
   rows: LiveAttendanceRow[];
@@ -28,10 +29,7 @@ export function EmceeLiveList({ initialRows, initialSessionName, refreshUrl }: {
     }
   }, [refreshUrl]);
 
-  useEffect(() => {
-    const intervalId = window.setInterval(() => { void sync(); }, 2_000);
-    return () => window.clearInterval(intervalId);
-  }, [sync]);
+  const refreshStatus = useAttendanceRealtimeRefresh(sync);
 
   return (
     <main className="songket-surface min-h-screen px-4 py-6 sm:px-6">
@@ -42,9 +40,13 @@ export function EmceeLiveList({ initialRows, initialSessionName, refreshUrl }: {
             <h1 className="mt-2 font-display text-3xl text-apc-ivory">Kehadiran Disahkan</h1>
             <p className="mt-2 text-sm text-apc-ivory/75">{sessionName ?? 'Tiada session aktif'}</p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-green-200">
+          <div className={`flex items-center gap-2 text-xs ${refreshStatus === 'live' ? 'text-green-200' : 'text-amber-100'}`}>
             <Radio aria-hidden="true" className="size-4" />
-            Langsung · dikemas kini {lastUpdated.toLocaleTimeString('ms-MY')}
+            {refreshStatus === 'live'
+              ? `Langsung · dikemas kini ${lastUpdated.toLocaleTimeString('ms-MY')}`
+              : refreshStatus === 'fallback'
+                ? 'Sambungan Realtime terganggu · semak setiap 10 saat'
+                : 'Menyambung Realtime...'}
           </div>
         </header>
 
