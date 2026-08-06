@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 
-import { getConfirmedRows } from '@/lib/data/live-attendance';
-import { getDashboardSnapshot } from '@/lib/data/dashboard';
+import { getConfirmedAttendanceSnapshot } from '@/lib/data/live-attendance-snapshot';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const snapshot = await getDashboardSnapshot();
+  const snapshot = await getConfirmedAttendanceSnapshot();
   return NextResponse.json(
-    { rows: getConfirmedRows(snapshot.rows), sessionName: snapshot.session?.name ?? null },
+    snapshot,
     { headers: { 'Cache-Control': 'public, no-store' } },
   );
 }

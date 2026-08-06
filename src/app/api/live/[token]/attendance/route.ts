@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { getConfirmedRows } from '@/lib/data/live-attendance';
-import { getDashboardSnapshot } from '@/lib/data/dashboard';
+import { getConfirmedAttendanceSnapshot } from '@/lib/data/live-attendance-snapshot';
 import { getRequiredSecret } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
@@ -10,9 +9,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
   const { token } = await params;
   if (token !== getRequiredSecret('EMCEE_VIEW_TOKEN')) return NextResponse.json({ message: 'Tidak ditemui.' }, { status: 404 });
 
-  const snapshot = await getDashboardSnapshot();
+  const snapshot = await getConfirmedAttendanceSnapshot();
   return NextResponse.json(
-    { rows: getConfirmedRows(snapshot.rows), sessionName: snapshot.session?.name ?? null },
+    snapshot,
     { headers: { 'Cache-Control': 'no-store, max-age=0' } },
   );
 }

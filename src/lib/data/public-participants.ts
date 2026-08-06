@@ -42,16 +42,18 @@ export async function getActiveSession(): Promise<EventSession> {
 }
 
 export async function searchParticipantsByName(query: string): Promise<PublicSearchSuggestion[]> {
-  const session = await getActiveSession();
   const normalized = normalizeName(query);
   const supabase = createAdminSupabaseClient();
-  const { data, error } = await supabase
-    .from('participants')
-    .select('id, name, organization, ic_last4')
-    .eq('is_active', true)
-    .ilike('name_normalized', `%${normalized.replace(/[%_]/g, '\\$&')}%`)
-    .order('bil', { ascending: true })
-    .limit(8);
+  const [session, { data, error }] = await Promise.all([
+    getActiveSession(),
+    supabase
+      .from('participants')
+      .select('id, name, organization, ic_last4')
+      .eq('is_active', true)
+      .ilike('name_normalized', `%${normalized.replace(/[%_]/g, '\\$&')}%`)
+      .order('bil', { ascending: true })
+      .limit(8),
+  ]);
 
   if (error) {
     throw new Error('Carian tidak dapat dilakukan. Sila cuba semula.');
@@ -79,14 +81,16 @@ async function getParticipantById(participantId: string): Promise<Participant | 
 }
 
 export async function lookupParticipantByIc(ic: string): Promise<PublicParticipantResult | null> {
-  const session = await getActiveSession();
   const supabase = createAdminSupabaseClient();
-  const { data: participant, error } = await supabase
-    .from('participants')
-    .select('*')
-    .eq('ic_hmac', createIcHmac(ic))
-    .eq('is_active', true)
-    .maybeSingle();
+  const [session, { data: participant, error }] = await Promise.all([
+    getActiveSession(),
+    supabase
+      .from('participants')
+      .select('*')
+      .eq('ic_hmac', createIcHmac(ic))
+      .eq('is_active', true)
+      .maybeSingle(),
+  ]);
 
   if (error) throw new Error('Carian tidak dapat dilakukan. Sila cuba semula.');
   if (!participant) return null;
@@ -95,12 +99,11 @@ export async function lookupParticipantByIc(ic: string): Promise<PublicParticipa
 }
 
 export async function lookupParticipantBySelection(participantId: string, sessionId: string): Promise<PublicParticipantResult | null> {
-  const session = await getActiveSession();
+  const [session, participant] = await Promise.all([getActiveSession(), getParticipantById(participantId)]);
   if (session.id !== sessionId) {
     throw new Error('Sesi carian telah berubah. Sila cari semula maklumat anda.');
   }
 
-  const participant = await getParticipantById(participantId);
   if (!participant) return null;
 
   return recordLookupAndBuildResult(participant, session.id);

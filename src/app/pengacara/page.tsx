@@ -1,10 +1,9 @@
 import { EmceeLiveList } from '@/components/live/emcee-live-list';
-import { getConfirmedRows } from '@/lib/data/live-attendance';
-import { getDashboardSnapshot } from '@/lib/data/dashboard';
+import { getConfirmedAttendanceSnapshot } from '@/lib/data/live-attendance-snapshot';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PublicEmceePage() {
-  const snapshot = await getDashboardSnapshot();
-  return <EmceeLiveList initialRows={getConfirmedRows(snapshot.rows)} initialSessionName={snapshot.session?.name ?? null} refreshUrl="/api/pengacara/attendance" />;
+  const snapshot = await getConfirmedAttendanceSnapshot();
+  return <EmceeLiveList initialRows={snapshot.rows} initialSessionName={snapshot.sessionName} refreshUrl="/api/pengacara/attendance" />;
 }

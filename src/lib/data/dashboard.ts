@@ -21,18 +21,19 @@ export interface DashboardSnapshot {
 
 export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
   const supabase = createAdminSupabaseClient();
-  const { data: session, error: sessionError } = await supabase
-    .from('event_sessions')
-    .select('id, name, mode')
-    .eq('is_active', true)
-    .maybeSingle();
+  const [{ data: session, error: sessionError }, { data: participants, error: participantError }] = await Promise.all([
+    supabase
+      .from('event_sessions')
+      .select('id, name, mode')
+      .eq('is_active', true)
+      .maybeSingle(),
+    supabase
+      .from('participants')
+      .select('id, bil, name, organization, seat_no, counter_no')
+      .eq('is_active', true)
+      .order('bil'),
+  ]);
   if (sessionError) throw new Error('Tidak dapat membaca Session aktif.');
-
-  const { data: participants, error: participantError } = await supabase
-    .from('participants')
-    .select('id, bil, name, organization, seat_no, counter_no')
-    .eq('is_active', true)
-    .order('bil');
   if (participantError) throw new Error('Tidak dapat membaca senarai penerima.');
 
   const activities = session

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { hasStaffAccess } from '@/lib/auth/shared-access';
-import { getCounterRows } from '@/lib/data/live-attendance';
-import { getDashboardSnapshot } from '@/lib/data/dashboard';
+import { getCounterAttendanceSnapshot } from '@/lib/data/live-attendance-snapshot';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +13,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: 'Kaunter tidak sah.' }, { status: 400 });
   }
 
-  const snapshot = await getDashboardSnapshot();
+  const snapshot = await getCounterAttendanceSnapshot(counterNo);
   return NextResponse.json(
-    { rows: getCounterRows(snapshot.rows, counterNo), sessionName: snapshot.session?.name ?? null },
+    snapshot,
     { headers: { 'Cache-Control': 'private, no-store' } },
   );
 }

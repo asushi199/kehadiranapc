@@ -49,7 +49,7 @@ try {
   const publicEmceeSource = readFileSync(publicEmceePage, 'utf8');
   assert.match(publicEmceeSource, /EmceeLiveList/);
   assert.match(publicEmceeSource, /dynamic = 'force-dynamic'/);
-  assert.match(readFileSync(publicEmceeApi, 'utf8'), /getConfirmedRows/);
+  assert.match(readFileSync(publicEmceeApi, 'utf8'), /getConfirmedAttendanceSnapshot/);
 
   const counterBoardSource = readFileSync('src/components/admin/counter-board.tsx', 'utf8');
   assert.match(counterBoardSource, /\/api\/admin\/attendance/);
@@ -63,6 +63,10 @@ try {
   const realtimeMigration = readFileSync('supabase/migrations/0003_attendance_realtime_refresh.sql', 'utf8');
   assert.match(realtimeMigration, /attendance_refresh_events/);
   assert.match(realtimeMigration, /participant_activity_refresh_event/);
+  const reducedRealtimeMigration = readFileSync('supabase/migrations/0005_reduce_attendance_refresh_events.sql', 'utf8');
+  assert.match(reducedRealtimeMigration, /OLD\.first_lookup_at is not distinct from NEW\.first_lookup_at/);
+  const searchIndexMigration = readFileSync('supabase/migrations/0004_participant_name_search_index.sql', 'utf8');
+  assert.match(searchIndexMigration, /gin_trgm_ops/);
 
   const semakSource = readFileSync('src/components/public/semak-experience.tsx', 'utf8');
   assert.match(semakSource, /const showDetails = result\.status === 'Hadir Disahkan';/);
