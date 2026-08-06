@@ -36,6 +36,7 @@ export default async function AdminDashboardPage({
             <h1 className="mt-2 font-display text-3xl text-apc-ivory">Dashboard</h1>
           </div>
           <div className="no-print flex items-center gap-3">
+            <Link className="text-sm text-apc-gold underline" href="/admin/kaunter">Paparan Kaunter</Link>
             <Link className="text-sm text-apc-gold underline" href="/admin/audit">Log Audit</Link>
             <Link className="text-sm text-apc-gold underline" href="/admin/settings">Tetapan Session</Link>
             <AdminSignOut />

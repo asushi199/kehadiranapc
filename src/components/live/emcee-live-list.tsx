@@ -20,14 +20,14 @@ function formatConfirmedAt(value: string | null): string {
   }).format(new Date(value));
 }
 
-export function EmceeLiveList({ initialRows, initialSessionName, token }: { initialRows: LiveAttendanceRow[]; initialSessionName: string | null; token: string }) {
+export function EmceeLiveList({ initialRows, initialSessionName, refreshUrl }: { initialRows: LiveAttendanceRow[]; initialSessionName: string | null; refreshUrl: string }) {
   const [rows, setRows] = useState(initialRows);
   const [sessionName, setSessionName] = useState(initialSessionName);
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const sync = useCallback(async () => {
     try {
-      const response = await fetch(`/api/live/${encodeURIComponent(token)}/attendance`, { cache: 'no-store' });
+      const response = await fetch(refreshUrl, { cache: 'no-store' });
       if (!response.ok) return;
       const payload = await response.json() as LivePayload;
       setRows(payload.rows);
@@ -36,7 +36,7 @@ export function EmceeLiveList({ initialRows, initialSessionName, token }: { init
     } catch {
       // Kekalkan paparan terakhir jika sambungan sementara terputus.
     }
-  }, [token]);
+  }, [refreshUrl]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => { void sync(); }, 2_000);

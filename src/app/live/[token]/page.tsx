@@ -8,5 +8,5 @@ export default async function EmceeLivePage({ params }: { params: Promise<{ toke
   const { token } = await params;
   if (token !== getRequiredSecret('EMCEE_VIEW_TOKEN')) notFound();
   const snapshot = await getDashboardSnapshot();
-  return <EmceeLiveList initialRows={getConfirmedRows(snapshot.rows)} initialSessionName={snapshot.session?.name ?? null} token={token} />;
+  return <EmceeLiveList initialRows={getConfirmedRows(snapshot.rows)} initialSessionName={snapshot.session?.name ?? null} refreshUrl={`/api/live/${encodeURIComponent(token)}/attendance`} />;
 }
